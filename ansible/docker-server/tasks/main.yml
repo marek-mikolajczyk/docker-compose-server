@@ -33,6 +33,7 @@
     - docker-ce 
     - docker-ce-cli 
     - containerd.io
+    - uidmap
 
 - name: docker user
   ansible.builtin.user:
@@ -50,3 +51,10 @@
   loop:
     - docker-ce
     - containerd
+
+
+- name: install docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)
+    dest: /usr/local/bin/docker-compose
+    mode: '0555'
