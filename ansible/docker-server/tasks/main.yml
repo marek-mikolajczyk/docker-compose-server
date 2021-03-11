@@ -31,7 +31,7 @@
     name: "{{ item }}"
     update_cache: yes 
   loop:
-    - docker-ce 
+    - docker
     - docker-ce-cli 
     - containerd.io
     - uidmap
@@ -50,12 +50,12 @@
     masked: no
     name: "{{ item }}"
   loop:
-    - docker-ce
+    - docker
     - containerd
 
 
 - name: install docker-compose
   get_url:
-    url: https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)
+    url: https://github.com/docker/compose/releases/download/1.28.5/docker-compose-Linux-x86_64
     dest: /usr/local/bin/docker-compose
     mode: '0555'
