@@ -31,9 +31,10 @@
     name: "{{ item }}"
     update_cache: yes 
   loop:
-    - docker-ce 
+    - docker
     - docker-ce-cli 
     - containerd.io
+    - uidmap
 
 - name: docker user
   ansible.builtin.user:
@@ -51,3 +52,10 @@
   loop:
     - docker
     - containerd
+
+
+- name: install docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.28.5/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0555'
