@@ -2,7 +2,7 @@
 # tasks file for docker-server
 - name: install packages
   apt:
-    name: *
+    name: '*'
     state: latest
     update_cache: yes 
 
@@ -11,7 +11,8 @@
     name: "{{ item }}"
   loop:
     - apt-transport-https 
-    - ca-certificates curl 
+    - ca-certificates 
+    - curl 
     - software-properties-common 
     - curl
     - gnupg
@@ -22,7 +23,7 @@
 
 - name: add Docker repository
   ansible.builtin.apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_version }} stable
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
     state: present
 
 - name: update and install Docker packages
@@ -48,5 +49,5 @@
     masked: no
     name: "{{ item }}"
   loop:
-    - docker-ce
+    - docker
     - containerd
