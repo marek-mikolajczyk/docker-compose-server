@@ -1,61 +1,7 @@
----
-# tasks file for docker-server
-- name: install packages
-  apt:
-    name: '*'
-    state: latest
-    update_cache: yes 
+- name: install on debian
+  include_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
 
-- name: install packages
-  apt:
-    name: "{{ item }}"
-  loop:
-    - apt-transport-https 
-    - ca-certificates 
-    - curl 
-    - software-properties-common 
-    - curl
-    - gnupg
-    - lsb-release
-
-- name: add Docker GPG
-  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
-- name: add Docker repository
-  ansible.builtin.apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-    state: present
-
-- name: update and install Docker packages
-  apt:
-    name: "{{ item }}"
-    update_cache: yes 
-  loop:
-    - docker
-    - docker-ce-cli 
-    - containerd.io
-    - uidmap
-
-- name: docker user
-  ansible.builtin.user:
-    name: docker
-    comment: Docker service account
-    group: docker
-
-
-- name: Docker autostart
-  ansible.builtin.systemd:
-    state: restarted
-    enabled: yes
-    masked: no
-    name: "{{ item }}"
-  loop:
-    - docker
-    - containerd
-
-
-- name: install docker-compose
-  get_url:
-    url: https://github.com/docker/compose/releases/download/1.28.5/docker-compose-Linux-x86_64
-    dest: /usr/local/bin/docker-compose
-    mode: '0555'
+- name: install on redhat
+  include_tasks: redhat.yml
+  when: ansible_os_family == 'RedHat'

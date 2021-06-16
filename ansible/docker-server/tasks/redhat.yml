@@ -1,0 +1,59 @@
+---
+# tasks file for docker-server
+- name: install packages
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes 
+  register: update_latest_result
+
+- name: reboot the machine if kernel was update
+  reboot:
+  when: "'kernel' in update_latest_result"
+    
+- name: install packages
+  yum:
+    name: 
+      - yum-utils
+      - curl 
+
+- name: Add Docker Engine CE repository
+  yum_repository:
+    name: docker-ce
+    description: Docker Engine CE
+    file: docker-ce
+    baseurl:  http://docker-release-blue-prod.s3-website-us-east-1.amazonaws.com/linux/centos/8/x86_64/stable
+    enabled: yes
+    gpgcheck: no
+
+
+- name: update and install Docker packages
+  yum:
+    name: 
+      - docker-ce
+    update_cache: yes 
+  loop:
+
+- name: docker user
+  ansible.builtin.user:
+    name: docker
+    comment: Docker service account
+    group: docker
+
+
+- name: Docker autostart
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: yes
+    masked: no
+    name: "{{ item }}"
+  loop:
+    - docker
+    - containerd
+
+
+- name: install docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0555'
